@@ -43,7 +43,7 @@ exports.create = async (tableName, data) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
     const queryString = pgp.helpers.insert(data, null, table) + 'RETURING *';
     try {
-        const result = await db.any(queryString);
+        const result = await db.one(queryString);
         return result;
     } catch (error) {
         console.log('Error create from db: ', error);
