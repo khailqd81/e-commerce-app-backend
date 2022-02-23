@@ -30,7 +30,6 @@ exports.getAll = async (tableName, sortCol) => {
 exports.getByValue = async (tableName, colName, value) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
     const queryString = pgp.as.format('SELECT * from ${table} WHERE ${colName~}=${value}', { table, colName, value });
-
     try {
         const result = await db.any(queryString);
         return result;

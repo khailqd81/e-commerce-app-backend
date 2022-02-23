@@ -7,6 +7,15 @@ module.exports = {
         return result;
     },
 
+    getProductByType: async (categoryName) => {
+        const category = await db.getByValue("Categories", "category_name", categoryName);
+        if (category[0]) {
+            const result = await db.getByValue(tableName, "category_id",category[0].category_id);
+            return result;
+        }
+        return [];
+    },
+
     addProduct: async (product) => {
         const result = await db.create(tableName, product);
         return result;
