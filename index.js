@@ -1,12 +1,10 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
-var cors = require('cors')
 const port = 4000;
-const router = require('./routers/index');
-// app.use('/', router);
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+require('./middlewares/bodyParser')(app);
+var cors = require('cors')
+const router = require('./routers');
+
 app.use(cors());
 app.use('/', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

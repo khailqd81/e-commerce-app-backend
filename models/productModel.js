@@ -10,10 +10,15 @@ module.exports = {
     getProductByType: async (categoryName) => {
         const category = await db.getByValue("Categories", "category_name", categoryName);
         if (category[0]) {
-            const result = await db.getByValue(tableName, "category_id",category[0].category_id);
+            const result = await db.getByValue(tableName, "category_id", category[0].category_id);
             return result;
         }
         return [];
+    },
+
+    getOneProduct: async (productId) => {
+        const result = await db.getByValue(tableName, idCol, productId);
+        return result[0];
     },
 
     addProduct: async (product) => {
