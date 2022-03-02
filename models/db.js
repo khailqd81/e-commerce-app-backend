@@ -38,9 +38,28 @@ exports.getByValue = async (tableName, colName, value) => {
     }
 }
 
-exports.create = async (tableName, data) => {
+exports.getFromTwoTable = async (tableName1, tableName2, colName1, colName2, value) => {
+    const table1 = new pgp.helpers.TableName({ table: tableName1, schema });
+    const table2 = new pgp.helpers.TableName({ table: tableName2, schema });
+    const queryString = pgp.as.format('SELECT * from ${table1},${table2} WHERE ${table1}.${colName1~}=${table2}.${colName1~} AND ${table1}.${colName2~}=${value}', {
+        table1,
+        table2,
+        colName1,
+        colName2,
+        value
+    })
+    try {
+        const result = await db.any(queryString);
+        return result;
+    } catch (error) {
+        console.log('Error getFrom2Table from db: ', error);
+
+    }
+}
+
+exports.create = async (tableName, colList, data) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
-    const queryString = pgp.helpers.insert(data, null, table) + 'RETURING *';
+    const queryString = pgp.helpers.insert(data, colList, table) + 'RETURNING *';
     try {
         const result = await db.one(queryString);
         return result;
@@ -51,24 +70,24 @@ exports.create = async (tableName, data) => {
 
 exports.update = async (tableName, data, conditionCol, value) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
-    const condition = pgp.as.format('WHERE ${conditionCol~}=${value}', { conditionCol, value });
-    const queryString = pgp.helpers.update(data, null, table) + condition + 'RETURING *';
+    const condition = pgp.as.format(' WHERE ${conditionCol~}=${value}', { conditionCol, value });
+    const queryString = pgp.helpers.update(data, null, table) + condition + ' RETURNING *';
     try {
         const result = await db.any(queryString);
         return result;
     } catch (error) {
-        console.log('Error getAll from db: ', error);
+        console.log('Error update from db: ', error);
     }
 }
 
 exports.delete = async (tableName, colName, value) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
-    const queryString = pgp.as.format('DELETE from ${table} WHERE ${colName~}=${value} RETURING *', { table, colName, value });
+    const queryString = pgp.as.format('DELETE from ${table} WHERE ${colName~}=${value} RETURNING *', { table, colName, value });
 
     try {
         const result = await db.any(queryString);
         return result;
     } catch (error) {
-        console.log('Error getAll from db: ', error);
+        console.log('Error delete from db: ', error);
     }
 }
