@@ -15,7 +15,7 @@ exports.addProduct = async (req, res, next) => {
             message: "Sản phẩm đã được thêm vào giỏ hàng"
         })
     }
-    
+
     const newRow = {
         account_id: req.body.account_id,
         product_id: req.body.product_id

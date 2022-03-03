@@ -41,15 +41,17 @@ exports.getByValue = async (tableName, colName, value) => {
 exports.getFromTwoTable = async (tableName1, tableName2, colName1, colName2, value) => {
     const table1 = new pgp.helpers.TableName({ table: tableName1, schema });
     const table2 = new pgp.helpers.TableName({ table: tableName2, schema });
-    const queryString = pgp.as.format('SELECT * from ${table1},${table2} WHERE ${table1}.${colName1~}=${table2}.${colName1~} AND ${table1}.${colName2~}=${value}', {
+    const queryString = pgp.as.format('SELECT * from ${table1},${table2} WHERE (${table1}.${colName1~}=${table2}.${colName1~}) AND (${table1}.${colName2~}=${value})', {
         table1,
         table2,
         colName1,
         colName2,
         value
     })
+    console.log("Qstr: ",queryString);
     try {
         const result = await db.any(queryString);
+        console.log("result: ",result);
         return result;
     } catch (error) {
         console.log('Error getFrom2Table from db: ', error);

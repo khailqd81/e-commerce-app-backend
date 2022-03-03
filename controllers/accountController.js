@@ -6,7 +6,7 @@ exports.signup = async (req, res, next) => {
     if (req.body) {
         const user = await userModel.getUser(req.body.username);
         if (user) {
-            return res.status(403).json({
+            return res.status(202).json({
                 message: "Username đã tồn tại"
             })
         }
@@ -28,7 +28,7 @@ exports.signup = async (req, res, next) => {
             message: "Đăng ký thành công"
         })
     }
-    return res.status(403).json({
+    return res.status(202).json({
         message: "Request trống"
     })
 }
@@ -36,7 +36,7 @@ exports.signup = async (req, res, next) => {
 exports.signin = async (req, res, next) => {
     const user = await userModel.getUser(req.body.username);
     if (!user) {
-        return res.status(403).send({
+        return res.status(202).send({
             message: "Username không hợp lệ."
         })
     }
@@ -62,7 +62,7 @@ exports.signin = async (req, res, next) => {
             })
         }
     }
-    return res.status(403).send({
+    return res.status(202).send({
         message: "Sai mật khẩu."
     })
 }

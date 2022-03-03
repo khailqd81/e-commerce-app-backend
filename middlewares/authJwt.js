@@ -4,15 +4,14 @@ const userModel = require('../models/userModel');
 exports.authUser = (req, res, next) => {
     const authorization = req.headers.authorization;
     const accessToken = authorization.toString().split(" ")[1];
-    console.log("Accesstoken in Auth: ", accessToken);
     if (!accessToken) {
-        return res.status(400).send({
+        return res.status(202).send({
             message: "Không có access token."
         });
     }
     jwt.verify(accessToken, process.env.JWT_SECRET, function (err, decoded) {
         if (err) {
-            return res.status(400).send({
+            return res.status(202).send({
                 message: "Unauthorized"
             })
         }
@@ -39,18 +38,18 @@ exports.handleRefreshToken = async (req, res, next) => {
                     })
                 }
             }
-            return res.status(400).send({
+            return res.status(202).send({
                 message: "Không tìm thấy ID user",
             })
 
         } catch (error) {
             console.log(error)
-            return res.status(400).send({
+            return res.status(202).send({
                 message: "Unauthorized",
             })
         }
     }
-    return res.status(400).send({
+    return res.status(202).send({
         message: "RefreshToken không hợp lệ"
     })
 }
