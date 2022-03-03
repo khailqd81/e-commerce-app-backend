@@ -12,8 +12,13 @@ module.exports = {
         return user[0];
     },
 
+    getUserById: async (account_id) => {
+        const user = await db.getByValue(tableName, colId, account_id);
+        return user[0];
+    },
+
     createUser: async (user, colList) => {
-        const newUser = await db.create(tableName,colList, user);
+        const newUser = await db.create(tableName, colList, user);
         return newUser;
     },
 

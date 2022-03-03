@@ -10,4 +10,10 @@ router.use('/products', productRoute);
 router.use('/category', categoryRoute);
 router.use('/account', accountRoute);
 router.use('/cart', authJwt.authUser, cartRoute);
+router.get('/is-signin', authJwt.authUser ,(req,res,next) => {
+    res.status(200).send({
+        message: "logged"
+    })
+});
+router.post('/refresh-token', authJwt.handleRefreshToken);
 module.exports = router;

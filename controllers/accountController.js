@@ -43,8 +43,8 @@ exports.signin = async (req, res, next) => {
     const checkPass = await bcryptjs.compare(req.body.password, user.password);
     if (checkPass) {
         try {
-            const accessToken = await jwt.sign({ account_id: user.account_id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRES_TOKEN });
-            const refreshToken = await jwt.sign({
+            const accessToken = jwt.sign({ account_id: user.account_id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRES_TOKEN });
+            const refreshToken = jwt.sign({
                 account_id: user.account_id,
                 username: user.username
             }, process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.EXPIRES_REFRESH_TOKEN });
@@ -64,5 +64,32 @@ exports.signin = async (req, res, next) => {
     }
     return res.status(403).send({
         message: "Sai mật khẩu."
+    })
+}
+
+exports.isSignin = async (req, res, next) => {
+    const token = req.headers["x-access-token"];
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+            const user = await userModel.getUserById(decoded.account_id);
+            if (user) {
+                return res.status(200).send({
+                    message: "logged"
+                })
+            }
+            return res.status(400).send({
+                message: "Không tìm thấy ID user",
+            })
+
+        } catch (error) {
+            console.log(error)
+            return res.status(400).send({
+                message: "Unauthorized",
+            })
+        }
+    }
+    return res.status(400).send({
+        message: "RefreshToken không hợp lệ"
     })
 }
