@@ -68,7 +68,7 @@ exports.signin = async (req, res, next) => {
 }
 
 exports.isSignin = async (req, res, next) => {
-    const token = req.headers["x-access-token"];
+    const token = req.headers.authorization;
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
@@ -78,7 +78,7 @@ exports.isSignin = async (req, res, next) => {
                     message: "logged"
                 })
             }
-            return res.status(400).send({
+            return res.status(202).send({
                 message: "Không tìm thấy ID user",
             })
 

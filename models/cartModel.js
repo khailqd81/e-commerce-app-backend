@@ -22,6 +22,10 @@ module.exports = {
         return newRow;
     },
 
+    updateCart: async (data) => {
+        const newRow = await db.updateTwoConditions(tableName, data, "account_id", data.account_id, "product_id", data.product_id)
+        return newRow;
+    },
     removeFromCart: async () => {
 
     }

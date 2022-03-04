@@ -51,7 +51,6 @@ exports.getFromTwoTable = async (tableName1, tableName2, colName1, colName2, val
     console.log("Qstr: ",queryString);
     try {
         const result = await db.any(queryString);
-        console.log("result: ",result);
         return result;
     } catch (error) {
         console.log('Error getFrom2Table from db: ', error);
@@ -73,6 +72,18 @@ exports.create = async (tableName, colList, data) => {
 exports.update = async (tableName, data, conditionCol, value) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
     const condition = pgp.as.format(' WHERE ${conditionCol~}=${value}', { conditionCol, value });
+    const queryString = pgp.helpers.update(data, null, table) + condition + ' RETURNING *';
+    try {
+        const result = await db.any(queryString);
+        return result;
+    } catch (error) {
+        console.log('Error update from db: ', error);
+    }
+}
+
+exports.updateTwoConditions = async (tableName, data, conditionCol1, value1, conditionCol2, value2) => {
+    const table = new pgp.helpers.TableName({ table: tableName, schema });
+    const condition = pgp.as.format(' WHERE (${conditionCol1~}=${value1}) AND (${conditionCol2~}=${value2})', { conditionCol1, value1,conditionCol2, value2 });
     const queryString = pgp.helpers.update(data, null, table) + condition + ' RETURNING *';
     try {
         const result = await db.any(queryString);

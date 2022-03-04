@@ -3,6 +3,11 @@ const userModel = require('../models/userModel');
 
 exports.authUser = (req, res, next) => {
     const authorization = req.headers.authorization;
+    if (!authorization) {
+        return res.status(202).send({
+            message: "Unauthorized."
+        });
+    }
     const accessToken = authorization.toString().split(" ")[1];
     if (!accessToken) {
         return res.status(202).send({
