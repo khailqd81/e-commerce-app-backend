@@ -26,7 +26,9 @@ module.exports = {
         const newRow = await db.updateTwoConditions(tableName, data, "account_id", data.account_id, "product_id", data.product_id)
         return newRow;
     },
-    removeFromCart: async () => {
-
+    
+    removeFromCart: async (product_id, account_id) => {
+        const removeRow = await db.deleteTwoConditions(tableName, ["product_id", "account_id"], [product_id, account_id]);
+        return removeRow;
     }
 }

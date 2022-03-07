@@ -4,6 +4,7 @@ const cartController = require('../controllers/cartController');
 
 router.get('/', cartController.getAll);
 router.post('/add', cartController.addProduct);
-router.post('/update', cartController.updateProduct);
+router.patch('/update', cartController.updateProduct);
+router.delete('/remove', cartController.removeProduct);
 
 module.exports = router;

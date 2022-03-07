@@ -25,7 +25,7 @@ exports.addProduct = async (req, res, next) => {
                 const product = await productModel.getOneProduct(req.body.product_id);
                 if (newRow.amount > product.quantity) {
                     return res.status(202).json({
-                        message: "Vượt số lượng hàng còn lại."
+                        message: "Vượt quá số lượng hàng còn lại."
                     })
                 }
                 const updateRow = await cartModel.updateCart(newRow);
@@ -92,5 +92,31 @@ exports.updateProduct = async (req, res, next) => {
         })
     }
 
+
+}
+
+exports.removeProduct = async (req, res, next) => {
+    try {
+        console.log(req.body.product_id, req.userId)
+        const delProduct = await cartModel.removeFromCart(req.body.product_id, req.userId);
+        if (delProduct) {
+            const newProducts = await cartModel.getAll(req.userId);
+            return res.status(200).json({
+                products: newProducts,
+                message: "Ok"
+            })
+
+        }
+        else {
+            res.status(202).json({
+                message: "Not Ok"
+            })
+        }
+
+    } catch (error) {
+        return res.status(400).json({
+            message: "Error"
+        })
+    }
 
 }

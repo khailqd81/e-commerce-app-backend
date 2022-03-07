@@ -15,5 +15,5 @@ router.get('/is-signin', authJwt.authUser ,(req,res,next) => {
         message: "logged"
     })
 });
-router.post('/refresh-token', authJwt.handleRefreshToken);
+router.get('/refresh-token', authJwt.handleRefreshToken);
 module.exports = router;

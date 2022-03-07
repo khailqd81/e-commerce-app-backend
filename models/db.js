@@ -48,7 +48,6 @@ exports.getFromTwoTable = async (tableName1, tableName2, colName1, colName2, val
         colName2,
         value
     })
-    console.log("Qstr: ",queryString);
     try {
         const result = await db.any(queryString);
         return result;
@@ -83,7 +82,7 @@ exports.update = async (tableName, data, conditionCol, value) => {
 
 exports.updateTwoConditions = async (tableName, data, conditionCol1, value1, conditionCol2, value2) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
-    const condition = pgp.as.format(' WHERE (${conditionCol1~}=${value1}) AND (${conditionCol2~}=${value2})', { conditionCol1, value1,conditionCol2, value2 });
+    const condition = pgp.as.format(' WHERE (${conditionCol1~}=${value1}) AND (${conditionCol2~}=${value2})', { conditionCol1, value1, conditionCol2, value2 });
     const queryString = pgp.helpers.update(data, null, table) + condition + ' RETURNING *';
     try {
         const result = await db.any(queryString);
@@ -97,6 +96,23 @@ exports.delete = async (tableName, colName, value) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
     const queryString = pgp.as.format('DELETE from ${table} WHERE ${colName~}=${value} RETURNING *', { table, colName, value });
 
+    try {
+        const result = await db.any(queryString);
+        return result;
+    } catch (error) {
+        console.log('Error delete from db: ', error);
+    }
+}
+
+exports.deleteTwoConditions = async (tableName, colNames, values) => {
+    const table = new pgp.helpers.TableName({ table: tableName, schema });
+    const conditionStr = colNames.reduce((total, colName, index) => {
+        return total + ` "${colName}"=${values[index]} AND`
+    }, " WHERE")
+
+    console.log(conditionStr.substr(0, conditionStr.length-3));
+    let queryString = pgp.as.format('DELETE from ${table}', { table}) + conditionStr.substr(0, conditionStr.length-3) + " RETURNING *";
+    console.log(queryString);
     try {
         const result = await db.any(queryString);
         return result;
