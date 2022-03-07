@@ -4,13 +4,15 @@ const productRoute = require('./productRoute');
 const categoryRoute = require('./categoryRoute');
 const accountRoute = require('./accountRoute');
 const cartRoute = require('./cartRoute');
+const orderRoute = require('./orderRoute');
 const authJwt = require('../middlewares/authJwt');
 
 router.use('/products', productRoute);
 router.use('/category', categoryRoute);
 router.use('/account', accountRoute);
 router.use('/cart', authJwt.authUser, cartRoute);
-router.get('/is-signin', authJwt.authUser ,(req,res,next) => {
+router.use('/order', authJwt.authUser, orderRoute);
+router.get('/is-signin', authJwt.authUser, (req, res, next) => {
     res.status(200).send({
         message: "logged"
     })
