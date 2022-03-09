@@ -26,7 +26,7 @@ exports.authUser = (req, res, next) => {
 }
 
 exports.handleRefreshToken = async (req, res, next) => {
-    const refreshToken = req.body.refreshToken;
+    const refreshToken = req.body.refreshToken || req.headers.authorization;
     if (refreshToken) {
         try {
             const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);

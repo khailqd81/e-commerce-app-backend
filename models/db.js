@@ -109,10 +109,7 @@ exports.deleteTwoConditions = async (tableName, colNames, values) => {
     const conditionStr = colNames.reduce((total, colName, index) => {
         return total + ` "${colName}"=${values[index]} AND`
     }, " WHERE")
-
-    console.log(conditionStr.substr(0, conditionStr.length-3));
     let queryString = pgp.as.format('DELETE from ${table}', { table}) + conditionStr.substr(0, conditionStr.length-3) + " RETURNING *";
-    console.log(queryString);
     try {
         const result = await db.any(queryString);
         return result;
