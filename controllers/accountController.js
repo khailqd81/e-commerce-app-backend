@@ -1,10 +1,10 @@
 const bcryptjs = require('bcryptjs');
-const userModel = require('../models/userModel');
+const accountModel = require('../models/accountModel');
 const jwt = require('jsonwebtoken');
 
 exports.signup = async (req, res, next) => {
     if (req.body) {
-        const user = await userModel.getUser(req.body.username);
+        const user = await accountModel.getUser(req.body.username);
         if (user) {
             return res.status(202).json({
                 message: "Username đã tồn tại"
@@ -23,7 +23,7 @@ exports.signup = async (req, res, next) => {
             is_deleted: false,
         }
 
-        await userModel.createUser(newUser, Object.keys(newUser));
+        await accountModel.createUser(newUser, Object.keys(newUser));
         return res.status(200).json({
             message: "Đăng ký thành công"
         })
@@ -34,7 +34,7 @@ exports.signup = async (req, res, next) => {
 }
 
 exports.signin = async (req, res, next) => {
-    const user = await userModel.getUser(req.body.username);
+    const user = await accountModel.getUser(req.body.username);
     if (!user) {
         return res.status(202).send({
             message: "Username không hợp lệ."
@@ -49,7 +49,7 @@ exports.signin = async (req, res, next) => {
                 username: user.username
             }, process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.EXPIRES_REFRESH_TOKEN });
             user.refresh_token = refreshToken;
-            await userModel.updateUser(user);
+            await accountModel.updateUser(user);
             return res.status(200).send({
                 id: user.account_id,
                 accessToken: accessToken,
@@ -72,7 +72,7 @@ exports.isSignin = async (req, res, next) => {
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-            const user = await userModel.getUserById(decoded.account_id);
+            const user = await accountModel.getUserById(decoded.account_id);
             if (user) {
                 return res.status(200).send({
                     message: "logged"
@@ -92,4 +92,20 @@ exports.isSignin = async (req, res, next) => {
     return res.status(400).send({
         message: "RefreshToken không hợp lệ"
     })
+}
+
+exports.getUserById = async (req, res, next) => {
+    const user = await accountModel.getUserById(req.userId);
+    if (user) {
+        return res.status(200).json({
+            username: user.username,
+            account_id: user.account_id,
+            email: user.email,
+            role: user.role
+        })
+    }
+    return res.status(202).json({
+        message: "Không tìm thấy user"
+    })
+
 }

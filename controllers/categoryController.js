@@ -9,3 +9,9 @@ exports.getProductsByCategory = async (req, res, next) => {
     const products = await categoryModel.getProductsByCategory(categoryName);
     return res.json(products);
 }
+
+exports.getCategoryById = async(req, res, next)=> {
+    const categoryId = req.params.slug;
+    const category = await categoryModel.getCategoryById(categoryId);
+    return res.json(category[0]);
+}

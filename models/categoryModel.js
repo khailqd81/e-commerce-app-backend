@@ -6,11 +6,14 @@ module.exports = {
         const result = await db.getAll(tableName, orderCol);
         return result;
     },
-
+    getCategoryById: async (cateId) => {
+        const result = await db.getByValue(tableName, idCol, cateId);
+        return result;
+    },
     getProductsByCategory: async (categoryName) => {
         const category = await db.getByValue(tableName, "category_name", categoryName);
         if (category[0]) {
-            const result = await db.getByValue("Products", "category_id",category[0].category_id);
+            const result = await db.getByValue("Products", "category_id", category[0].category_id);
             return result;
         }
         return [];

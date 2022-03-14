@@ -5,8 +5,7 @@ exports.getAll = async (req, res, next) => {
     const accountId = req.userId;
     if (accountId) {
         let orderDetails = await orderModel.getAllOrderDetail(accountId);
-        console.log(Object.keys(orderDetails[0]).length);
-        if (Object.keys(orderDetails[0]).length === 0) {
+        if (orderDetails && orderDetails[0] && Object.keys(orderDetails[0]).length === 0) {
             orderDetails = [];
         }
         return res.status(200).send({

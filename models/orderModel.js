@@ -10,7 +10,6 @@ module.exports = {
             const productDetail = await db.getByValue("OrderDetail", "order_id", order.order_id);
             ordersDetail.push(productDetail);
         }
-        console.log(ordersDetail)
         // Lấy ra thông tin chi tiết của từng món hàng trong đơn hàng
         let response = [];
         let index = 0;

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const userModel = require('../models/userModel');
+const accountModel = require('../models/accountModel');
 
 exports.authUser = (req, res, next) => {
     const authorization = req.headers.authorization;
@@ -31,7 +31,7 @@ exports.handleRefreshToken = async (req, res, next) => {
         try {
             const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
             console.log("id: ", (decoded.account_id))
-            const user = await userModel.getUserById(decoded.account_id);
+            const user = await accountModel.getUserById(decoded.account_id);
             if (user) {
                 const tokenFromDb = user.refresh_token
                 if (refreshToken === tokenFromDb) {

@@ -21,6 +21,11 @@ module.exports = {
         return result[0];
     },
 
+    getProductByName: async (productName) => {
+        const result = await db.getStringLike(tableName,"product_name",productName);
+        return result;
+    },
+
     addProduct: async (product) => {
         const result = await db.create(tableName, product);
         return result;

@@ -1,3 +1,5 @@
+const { TableName } = require('pg-promise');
+
 // const { TableName } = require('pg-promise');
 const pgp = require('pg-promise')({
     capSQL: true
@@ -38,6 +40,18 @@ exports.getByValue = async (tableName, colName, value) => {
     }
 }
 
+exports.getStringLike = async (tableName, colName, value) => {
+    const table = new pgp.helpers.TableName({ table: tableName, schema });
+    let stringCompare = `%${value}%`
+    const queryString = pgp.as.format('SELECT * FROM ${table} WHERE ${colName~} ILIKE ${stringCompare}', { table, colName, stringCompare });
+    console.log(queryString);
+    try {
+        const result = await db.any(queryString);
+        return result;
+    } catch (error) {
+        console.log('Error getStringLike from db: ', error);
+    }
+}
 exports.getFromTwoTable = async (tableName1, tableName2, colName1, colName2, value) => {
     const table1 = new pgp.helpers.TableName({ table: tableName1, schema });
     const table2 = new pgp.helpers.TableName({ table: tableName2, schema });
@@ -109,7 +123,7 @@ exports.deleteTwoConditions = async (tableName, colNames, values) => {
     const conditionStr = colNames.reduce((total, colName, index) => {
         return total + ` "${colName}"=${values[index]} AND`
     }, " WHERE")
-    let queryString = pgp.as.format('DELETE from ${table}', { table}) + conditionStr.substr(0, conditionStr.length-3) + " RETURNING *";
+    let queryString = pgp.as.format('DELETE from ${table}', { table }) + conditionStr.substr(0, conditionStr.length - 3) + " RETURNING *";
     try {
         const result = await db.any(queryString);
         return result;
