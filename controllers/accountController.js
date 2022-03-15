@@ -100,6 +100,7 @@ exports.getUserById = async (req, res, next) => {
         return res.status(200).json({
             username: user.username,
             account_id: user.account_id,
+            fullname: user.fullname,
             email: user.email,
             role: user.role
         })

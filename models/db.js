@@ -44,7 +44,6 @@ exports.getStringLike = async (tableName, colName, value) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
     let stringCompare = `%${value}%`
     const queryString = pgp.as.format('SELECT * FROM ${table} WHERE ${colName~} ILIKE ${stringCompare}', { table, colName, stringCompare });
-    console.log(queryString);
     try {
         const result = await db.any(queryString);
         return result;

@@ -27,10 +27,10 @@ exports.authUser = (req, res, next) => {
 
 exports.handleRefreshToken = async (req, res, next) => {
     const refreshToken = req.body.refreshToken || req.headers.authorization;
+
     if (refreshToken) {
         try {
             const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-            console.log("id: ", (decoded.account_id))
             const user = await accountModel.getUserById(decoded.account_id);
             if (user) {
                 const tokenFromDb = user.refresh_token
@@ -54,6 +54,7 @@ exports.handleRefreshToken = async (req, res, next) => {
             })
         }
     }
+    
     return res.status(202).send({
         message: "RefreshToken không hợp lệ"
     })

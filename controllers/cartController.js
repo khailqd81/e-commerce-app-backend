@@ -97,7 +97,6 @@ exports.updateProduct = async (req, res, next) => {
 
 exports.removeProduct = async (req, res, next) => {
     try {
-        console.log(req.body.product_id, req.userId)
         const delProduct = await cartModel.removeFromCart(req.body.product_id, req.userId);
         if (delProduct) {
             const newProducts = await cartModel.getAll(req.userId);
