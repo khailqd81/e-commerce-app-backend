@@ -3,6 +3,7 @@ const accountModel = require('../models/accountModel');
 
 exports.authUser = (req, res, next) => {
     const authorization = req.headers.authorization;
+    console.log(authorization)
     if (!authorization) {
         return res.status(202).send({
             message: "Unauthorized."
@@ -17,7 +18,7 @@ exports.authUser = (req, res, next) => {
     jwt.verify(accessToken, process.env.JWT_SECRET, function (err, decoded) {
         if (err) {
             return res.status(202).send({
-                message: "Unauthorized"
+                message: "Authorized error"
             })
         }
         req.userId = decoded.account_id;
@@ -54,14 +55,24 @@ exports.handleRefreshToken = async (req, res, next) => {
             })
         }
     }
-    
+
     return res.status(202).send({
         message: "RefreshToken không hợp lệ"
     })
 }
 
-exports.isAdmin = (req, res, next) => {
+exports.isAdmin = async (req, res, next) => {
     if (req.userId) {
-
+        const user = await accountModel.getUserById(req.userId);
+        if (user.role !== "admin") {
+            return res.json({
+                message: "Not admin account"
+            })
+        }
+        next();
+    } else {
+        return res.json({
+            message: "No user id"
+        })
     }
 }

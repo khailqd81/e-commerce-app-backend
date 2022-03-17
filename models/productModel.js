@@ -27,7 +27,7 @@ module.exports = {
     },
 
     addProduct: async (product) => {
-        const result = await db.create(tableName, product);
+        const result = await db.create(tableName,Object.keys(product), product);
         return result;
     },
 

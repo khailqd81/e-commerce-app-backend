@@ -6,5 +6,7 @@ const authJwt = require('../middlewares/authJwt');
 router.post('/signup', accountController.signup);
 router.post('/signin', accountController.signin);
 router.get('/is-signin', accountController.isSignin);
-router.get('/id', authJwt.authUser, accountController.getUserById)
+router.get('/id', authJwt.authUser, accountController.getUserById);
+router.get('/info', authJwt.authUser,authJwt.isAdmin, accountController.getUserInfoByAdmin);
+router.get('/', authJwt.authUser, authJwt.isAdmin, accountController.getAllUsers);
 module.exports = router;

@@ -108,5 +108,30 @@ exports.getUserById = async (req, res, next) => {
     return res.status(202).json({
         message: "Không tìm thấy user"
     })
-
+}
+exports.getUserInfoByAdmin = async (req, res, next) => {
+    const user = await accountModel.getUserById(req.query.account_id);
+    if (user) {
+        return res.status(200).json({
+            username: user.username,
+            account_id: user.account_id,
+            fullname: user.fullname,
+            email: user.email,
+            role: user.role
+        })
+    }
+    return res.status(202).json({
+        message: "Không tìm thấy user"
+    })
+}
+exports.getAllUsers= async (req, res, next) => {
+    const users = await accountModel.getAllUser();
+    if (users) {
+        return res.status(200).json({
+            users
+        })
+    }
+    return res.status(202).json({
+        message: "Không tìm thấy user"
+    })
 }
