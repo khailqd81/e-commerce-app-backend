@@ -60,3 +60,25 @@ exports.addProduct = async (req, res, next) => {
         message: "Empty form"
     })
 }
+
+
+exports.statisticPro = async (req, res, next) => {
+    if (req.query && req.query.staField) {
+        const staField = req.query.staField;
+        console.log(staField);
+        let result;
+        if (staField.toString() === "pro_sold") {
+            result = await productModel.getAllProduct("sold");
+        } else {
+            result = await productModel.statisticProByCate(staField);
+        }
+        if (result && result.length !== 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(202).json([]);
+        }
+    }
+    return res.status(202).json({
+        message: "Empty request"
+    })
+}

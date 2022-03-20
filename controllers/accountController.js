@@ -40,6 +40,11 @@ exports.signin = async (req, res, next) => {
             message: "Username không hợp lệ."
         })
     }
+    if (user.is_blocked) {
+        return res.status(202).send({
+            message: "Tài khoản đang bị khóa."
+        })
+    }
     const checkPass = await bcryptjs.compare(req.body.password, user.password);
     if (checkPass) {
         try {
@@ -109,6 +114,7 @@ exports.getUserById = async (req, res, next) => {
         message: "Không tìm thấy user"
     })
 }
+
 exports.getUserInfoByAdmin = async (req, res, next) => {
     const user = await accountModel.getUserById(req.query.account_id);
     if (user) {
@@ -124,7 +130,8 @@ exports.getUserInfoByAdmin = async (req, res, next) => {
         message: "Không tìm thấy user"
     })
 }
-exports.getAllUsers= async (req, res, next) => {
+
+exports.getAllUsers = async (req, res, next) => {
     const users = await accountModel.getAllUser();
     if (users) {
         return res.status(200).json({
@@ -133,5 +140,54 @@ exports.getAllUsers= async (req, res, next) => {
     }
     return res.status(202).json({
         message: "Không tìm thấy user"
+    })
+}
+
+exports.delUser = async (req, res, next) => {
+    const account_id = req.body.account_id;
+    if (account_id) {
+        try {
+            const user = await accountModel.getUserById(account_id);
+            const delUser = await accountModel.deleteUser({
+                ...user,
+                is_deleted: true
+            });
+            return res.status(200).json({
+                delUser,
+                message: "Ok"
+            })
+        } catch (error) {
+            return res.status(202).json({
+                message: "Error delete from db"
+            })
+        }
+    }
+    return res.status(202).json({
+        message: "Empty request"
+    })
+}
+
+exports.blockUser = async (req, res, next) => {
+    const account_id = req.body.account_id;
+    const block = req.body.block;
+    if (account_id) {
+        try {
+            const user = await accountModel.getUserById(account_id);
+            const blockUser = await accountModel.updateUser({
+                ...user,
+                is_blocked: block
+            });
+            return res.status(200).json({
+                user: blockUser[0],
+                message: "Ok"
+            })
+        } catch (error) {
+            return res.status(202).json({
+                message: "Error block from db"
+            })
+        }
+    }
+    return res.status(202).json({
+        message: "Empty request"
     })
 }

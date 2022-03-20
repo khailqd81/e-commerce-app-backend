@@ -39,5 +39,16 @@ module.exports = {
     deleteProduct: async (productId) => {
         const result = await db.delete(tableName, idCol, productId);
         return result;
+    },
+
+    statisticProByCate: async (staField) => {
+        const result = await db.statisticTwoTable("Products","Categories",staField);
+        result.forEach(item => {
+            if (item.total_sold === null) {
+                item.total_sold = 0
+            }
+        })
+        console.log("result in sta: ", result);
+        return result;
     }
 }

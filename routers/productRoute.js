@@ -5,6 +5,7 @@ const authJwt = require('../middlewares/authJwt');
 router.get('/id', productController.getOneProductById);
 router.post('/add', authJwt.authUser, authJwt.isAdmin, productController.addProduct);
 router.get('/search', productController.getProductsByName);
+router.get('/statistic', productController.statisticPro);
 router.use('/:slug', productController.getByType);
 router.get('/', productController.getAll);
 module.exports = router;

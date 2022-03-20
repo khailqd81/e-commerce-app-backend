@@ -4,16 +4,23 @@ const colId = "account_id"
 module.exports = {
     getAllUser: async () => {
         const users = await db.getAll(tableName, colId);
-        return users;
+        const returnUsers = users.filter(item => item.is_deleted === false)
+        return returnUsers;
     },
 
     getUser: async (username) => {
         const user = await db.getByValue(tableName, "username", username);
+        if (user.is_deleted) {
+            return null;
+        }
         return user[0];
     },
 
     getUserById: async (account_id) => {
         const user = await db.getByValue(tableName, colId, account_id);
+        if (user.is_deleted) {
+            return null;
+        }
         return user[0];
     },
 
@@ -28,7 +35,8 @@ module.exports = {
     },
 
     deleteUser: async (user) => {
-        const returnUser = await db.delete(tableName, "account_id", user.account_id);
+        const returnUser = await db.update(tableName, user, "account_id", user.account_id);
         return returnUser;
-    }
+    },
+
 }
