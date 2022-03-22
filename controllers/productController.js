@@ -1,4 +1,5 @@
 const productModel = require('../models/productModel');
+const commentModel = require('../models/commentModel');
 // const firebase = require('../utils/firebaseUpload');
 exports.getAll = async (req, res, next) => {
     const orderCol = "product_id";
@@ -15,7 +16,11 @@ exports.getByType = async (req, res, next) => {
 exports.getOneProductById = async (req, res, next) => {
     const productId = req.query.productId;
     const products = await productModel.getOneProduct(productId);
-    return res.json(products);
+    const pro_comment = await commentModel.getCommentByProId(productId);
+    return res.json({
+        ...products,
+        comments: pro_comment
+    });
 }
 
 exports.getProductsByName = async (req, res, next) => {
@@ -61,11 +66,9 @@ exports.addProduct = async (req, res, next) => {
     })
 }
 
-
 exports.statisticPro = async (req, res, next) => {
     if (req.query && req.query.staField) {
         const staField = req.query.staField;
-        console.log(staField);
         let result;
         if (staField.toString() === "pro_sold") {
             result = await productModel.getAllProduct("sold");

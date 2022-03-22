@@ -20,7 +20,8 @@ module.exports = {
                 products.push({
                     ...product[0],
                     buyAmount: row.amount,
-                    priced: row.priced
+                    priced: row.priced,
+                    is_comment: row.is_comment
                 });
             }
             response.push({
@@ -50,9 +51,10 @@ module.exports = {
         const newOrder = await db.create(tableName, ["account_id", "date_created"], order);
         const orderId = newOrder.order_id;
         for (let product of products) {
-            await db.create("OrderDetail", ["order_id", "product_id", "amount", "priced"], {
+            await db.create("OrderDetail", ["order_id", "product_id", "amount", "priced","is_comment"], {
                 order_id: orderId,
-                ...product
+                ...product,
+                is_comment: false
             });
             let newProducts = await db.getByValue("Products", "product_id", product.product_id);
             let newProduct = newProducts[0];

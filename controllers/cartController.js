@@ -104,7 +104,6 @@ exports.removeProduct = async (req, res, next) => {
                 products: newProducts,
                 message: "Ok"
             })
-
         }
         else {
             res.status(202).json({

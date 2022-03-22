@@ -48,7 +48,6 @@ module.exports = {
                 item.total_sold = 0
             }
         })
-        console.log("result in sta: ", result);
         return result;
     }
 }

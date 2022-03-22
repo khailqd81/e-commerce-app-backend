@@ -40,6 +40,18 @@ exports.getByValue = async (tableName, colName, value) => {
     }
 }
 
+exports.getByTwoValue = async (tableName, colName1, value1, colName2, value2) => {
+    const table = new pgp.helpers.TableName({ table: tableName, schema });
+    const queryString = pgp.as.format('SELECT * from ${table} WHERE ${colName1~}=${value1} AND ${colName2~}=${value2}',
+        { table, colName1, value1, colName2, value2 });
+    try {
+        const result = await db.any(queryString);
+        return result;
+    } catch (error) {
+        console.log('Error getByTwoValue from db: ', error);
+    }
+}
+
 exports.getStringLike = async (tableName, colName, value) => {
     const table = new pgp.helpers.TableName({ table: tableName, schema });
     let stringCompare = `%${value}%`
@@ -134,16 +146,15 @@ exports.deleteTwoConditions = async (tableName, colNames, values) => {
 exports.statisticTwoTable = async (tableName1, tableName2, staField) => {
     const table1 = new pgp.helpers.TableName({ table: tableName1, schema });
     const table2 = new pgp.helpers.TableName({ table: tableName2, schema });
-    const condition = pgp.as.format('GROUP BY ${t2}."category_id",${t2}."category_name" ORDER BY ${t2}."category_id"',{t1: table1, t2: table2});
+    const condition = pgp.as.format('GROUP BY ${t2}."category_id",${t2}."category_name" ORDER BY ${t2}."category_id"', { t1: table1, t2: table2 });
     const queryString = pgp.as.format('SELECT ${t2}."category_id",${t2}."category_name",sum(${t1}.${staField~}) as "total_sold" FROM ${t2} LEFT JOIN ${t1} on ${t1}."category_id"=${t2}."category_id" ', {
         t1: table1, t2: table2, staField
     }) + condition;
-    console.log(queryString);
     try {
         const result = await db.any(queryString)
         return result;
     } catch (error) {
         console.log('Error statisticProSold from db: ', error);
-        
+
     }
 }

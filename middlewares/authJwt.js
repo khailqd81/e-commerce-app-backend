@@ -3,7 +3,6 @@ const accountModel = require('../models/accountModel');
 
 exports.authUser = (req, res, next) => {
     const authorization = req.headers.authorization;
-    console.log(authorization)
     if (!authorization) {
         return res.status(202).send({
             message: "Unauthorized."
