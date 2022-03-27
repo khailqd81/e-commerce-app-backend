@@ -56,9 +56,16 @@ exports.addProduct = async (req, res, next) => {
         }
         console.log(product);
         const newProduct = await productModel.addProduct(product);
-        return res.status(200).json({
-            newProduct
-        })
+        if (newProduct) {
+            return res.status(200).json({
+                newProduct
+            })
+        } else {
+            return res.status(202).json({
+                message: "Error add product to db"
+            })
+        }
+
     }
 
     return res.status(202).json({
