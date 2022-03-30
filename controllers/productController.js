@@ -4,7 +4,7 @@ const commentModel = require('../models/commentModel');
 exports.getAll = async (req, res, next) => {
     const orderCol = "product_id";
     const products = await productModel.getAllProduct(orderCol);
-    return res.json(products);
+    return res.status(200).json(products);
 }
 
 exports.getByType = async (req, res, next) => {
@@ -54,7 +54,6 @@ exports.addProduct = async (req, res, next) => {
             is_deleted: false,
             account_id: null
         }
-        console.log(product);
         const newProduct = await productModel.addProduct(product);
         if (newProduct) {
             return res.status(200).json({

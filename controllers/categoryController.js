@@ -7,11 +7,11 @@ exports.getAll = async (req, res, next) => {
 exports.getProductsByCategory = async (req, res, next) => {
     const categoryName = req.params.slug;
     const products = await categoryModel.getProductsByCategory(categoryName);
-    return res.json(products);
+    return res.status(200).json(products);
 }
 
 exports.getCategoryById = async(req, res, next)=> {
     const categoryId = req.params.slug;
     const category = await categoryModel.getCategoryById(categoryId);
-    return res.json(category[0]);
+    return res.status(200).json(category[0]);
 }
