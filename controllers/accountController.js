@@ -4,6 +4,15 @@ const jwt = require('jsonwebtoken');
 
 exports.signup = async (req, res, next) => {
     if (req.body) {
+        if (req.body.fullname.length <= 0
+            || req.body.username.length <= 0
+            || req.body.password.length <= 0
+            || req.body.email.length <= 0
+            || req.body.fullname.length <= 0) {
+            return res.status(202).json({
+                message: "Vui lòng điền đầy đủ các trường."
+            })
+        }
         const user = await accountModel.getUser(req.body.username);
         if (user) {
             return res.status(202).json({
@@ -29,7 +38,7 @@ exports.signup = async (req, res, next) => {
         })
     }
     return res.status(202).json({
-        message: "Request trống"
+        message: "Form gửi trống"
     })
 }
 
