@@ -13,8 +13,18 @@ const pgp = require('pg-promise')({
 //     password: '123456',
 //     max: 30
 // };
-
-const cn = process.env.DATABASE_URL
+const cn = {
+    host: process.env.PG_HOST,
+    port: process.env.PG_PORT,
+    database: process.env.PG_DB,
+    user: process.env.PG_USER,
+    password: process.env.PG_PASSWORD,
+    max: 20,
+    ssl: {
+        rejectUnauthorized: false,
+    },
+};
+// const cn = process.env.DATABASE_URL
 const db = pgp(cn);
 const schema = "public";
 
