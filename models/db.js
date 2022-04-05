@@ -5,15 +5,16 @@ const pgp = require('pg-promise')({
     capSQL: true
 });
 
-const cn = {
-    host: 'localhost',
-    port: 5432,
-    database: 'my_store',
-    user: 'postgres',
-    password: '123456',
-    max: 30
-};
+// const cn = {
+//     host: 'localhost',
+//     port: 5432,
+//     database: 'my_store',
+//     user: 'postgres',
+//     password: '123456',
+//     max: 30
+// };
 
+const cn = process.env.DATABASE_URL
 const db = pgp(cn);
 const schema = "public";
 
