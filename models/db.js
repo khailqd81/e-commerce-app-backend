@@ -5,25 +5,25 @@ const pgp = require('pg-promise')({
     capSQL: true
 });
 
-// const cn = {
-//     host: 'localhost',
-//     port: 5432,
-//     database: 'my_store',
-//     user: 'postgres',
-//     password: '123456',
-//     max: 30
-// };
 const cn = {
-    host: process.env.PG_HOST,
-    port: process.env.PG_PORT,
-    database: process.env.PG_DB,
-    user: process.env.PG_USER,
-    password: process.env.PG_PASSWORD,
-    max: 20,
-    ssl: {
-        rejectUnauthorized: false,
-    },
+    host: 'localhost',
+    port: 5432,
+    database: 'my_store',
+    user: 'postgres',
+    password: '123456',
+    max: 30
 };
+// const cn = {
+//     host: process.env.PG_HOST,
+//     port: process.env.PG_PORT,
+//     database: process.env.PG_DB,
+//     user: process.env.PG_USER,
+//     password: Sprocess.env.PG_PASSWORD,
+//     max: 20,
+//     ssl: {
+//         rejectUnauthorized: false,
+//     },
+// };
 // const cn = process.env.DATABASE_URL
 const db = pgp(cn);
 const schema = "public";
@@ -111,6 +111,19 @@ exports.update = async (tableName, data, conditionCol, value) => {
     try {
         const result = await db.any(queryString);
         return result;
+    } catch (error) {
+        console.log('Error update from db: ', error);
+    }
+}
+
+exports.updateSomeCols = async (tableName, data, conditionCol, value) => {
+    const table = new pgp.helpers.TableName({ table: tableName, schema });
+    const condition = pgp.as.format(' WHERE ${conditionCol~}=${value}', { conditionCol, value });
+    const queryString = pgp.helpers.update(data, Object.keys(data), table) + condition + ' RETURNING *';
+    try {
+        const result = await db.any(queryString);
+        return result;
+        return [];
     } catch (error) {
         console.log('Error update from db: ', error);
     }

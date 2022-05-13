@@ -31,8 +31,8 @@ module.exports = {
         return result;
     },
 
-    updateProduct: async (product) => {
-        const result = await db.update(tableName, product, idCol, product.product_id);
+    updateProduct: async (product, product_id) => {
+        const result = await db.updateSomeCols(tableName, product, idCol, product_id);
         return result;
     },
 

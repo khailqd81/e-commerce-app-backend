@@ -3,7 +3,8 @@ const commentModel = require('../models/commentModel');
 // const firebase = require('../utils/firebaseUpload');
 exports.getAll = async (req, res, next) => {
     const orderCol = "product_id";
-    const products = await productModel.getAllProduct(orderCol);
+    let products = await productModel.getAllProduct(orderCol);
+    products = products.filter(product => !product.is_deleted)
     return res.status(200).json(products);
 }
 
@@ -30,17 +31,7 @@ exports.getProductsByName = async (req, res, next) => {
 }
 
 exports.addProduct = async (req, res, next) => {
-    console.log("Add product");
-
     if (req.body) {
-        // try {
-        //     const image_url = await firebase.handleUpload(req.files.image_file);
-        //     console.log('image_url: ', image_url)
-
-        // } catch (error) {
-        //     console.log('error upload file ', error)
-
-        // }
         const data = JSON.parse(req.body.data);
         const product = {
             product_name: data.product_name,
@@ -62,6 +53,36 @@ exports.addProduct = async (req, res, next) => {
         } else {
             return res.status(202).json({
                 message: "Error add product to db"
+            })
+        }
+
+    }
+
+    return res.status(202).json({
+        message: "Empty form"
+    })
+}
+
+exports.updateProduct = async (req, res, next) => {
+    if (req.body) {
+        console.log(req.body)
+        const data = JSON.parse(req.body.data);
+        const product = {
+            product_name: data.product_name,
+            description: data.description,
+            price: parseFloat(data.price),
+            quantity: parseInt(data.quantity),
+            category_id: parseInt(data.category_id),
+            full_description: null,
+            image_url: data.image_url,
+            is_deleted: data.is_deleted,
+        }
+        const updateProduct = await productModel.updateProduct(product, data.product_id);
+        if (updateProduct) {
+            return res.status(200).json(updateProduct)
+        } else {
+            return res.status(202).json({
+                message: "Error update product to db"
             })
         }
 

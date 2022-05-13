@@ -6,7 +6,8 @@ exports.getAll = async (req, res, next) => {
 
 exports.getProductsByCategory = async (req, res, next) => {
     const categoryName = req.params.slug;
-    const products = await categoryModel.getProductsByCategory(categoryName);
+    let products = await categoryModel.getProductsByCategory(categoryName);
+    products = products.filter(product => !product.is_deleted)
     return res.status(200).json(products);
 }
 
